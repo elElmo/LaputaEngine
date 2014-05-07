@@ -109,7 +109,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdArgs, in
     device->ActivatePixelShader(0);
 
     std::auto_ptr<LptaMesh> model(LptaMesh::LoadFromFile("test.3ds", VERTEX_TYPE::VT_UU));
-    device->Cache(*model);
+    //device->Cache(*model);
 
     LptaMatrix m = LptaMatrix::MakeIdentityMatrix();
     m.SetTranslation(0.0f, 0.0f, 0.0f);

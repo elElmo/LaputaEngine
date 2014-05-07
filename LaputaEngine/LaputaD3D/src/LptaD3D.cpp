@@ -162,7 +162,9 @@ HRESULT LptaD3D::Render(const lpta::LptaMesh &mesh)
     }
     else {
         // todo dynamic buffering
-        return E_FAIL;
+        // todo actual skin id
+        this->vertexCache->Render(mesh.GetVertices(), mesh.GetIndices(), 0);
+        return S_OK;
     }
 }
 
@@ -195,6 +197,7 @@ HRESULT LptaD3D::Clear(bool clearPixel, bool clearDepth, bool clearStencil)
 
 void LptaD3D::EndRendering(void)
 {
+    vertexCache->ForcedFlushAll();
     d3ddev->EndScene();
     //TODO: get rid of this nasty hack
     //d3ddev->Present(nullptr, nullptr, nullptr, nullptr);

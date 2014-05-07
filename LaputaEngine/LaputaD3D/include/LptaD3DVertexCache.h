@@ -3,7 +3,7 @@
 #define CUSTOMFVF (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
 
 #include <memory>
-#include <vector>
+#include <list>
 #include <d3d9.h>
 #include "LptaSkinManager.h"
 #include "LptaMaterialManager.h"
@@ -27,7 +27,7 @@ namespace lpta_d3d
 class LptaD3DVertexCache : public lpta::LptaVertexCache
 {
 public:
-    typedef std::unique_ptr<LptaD3DDynamicBuffer> DYNAMIC_BUFFER;
+    typedef std::shared_ptr<LptaD3DDynamicBuffer> DYNAMIC_BUFFER;
     const unsigned int MAX_CACHES = 10;
 
 public:
@@ -53,7 +53,7 @@ public:
     ///////////////////////////////////////////////////////////////////////////
     // Dynamic Buffers
     /////////////////////////////////////////////////////////////////
-    virtual HRESULT Render(const lpta::LptaVertices &vertices, const lpta::INDICES &indices, 
+    HRESULT Render(const lpta::LptaVertices &vertices, const lpta::INDICES &indices, 
         lpta::LptaSkin::SKIN_ID skinId);
     virtual HRESULT ForcedFlushAll(void);
     virtual HRESULT ForcedFlush(lpta::VERTEX_TYPE vertexType);
@@ -65,7 +65,7 @@ private:
     
     // vertex buffers
     LptaD3DStaticBufferManager staticBuffers;
-    std::vector<DYNAMIC_BUFFER> dynamicBuffers;
+    std::list<DYNAMIC_BUFFER> dynamicBuffers;
 
     // managers
     // note: skin manager depends on material manager, declaration ordering is

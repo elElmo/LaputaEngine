@@ -9,6 +9,7 @@
 namespace lpta_d3d
 {
 
+// todo eliminate dup with static buffer
 class LptaD3DDynamicBuffer
 {
 public:
@@ -23,11 +24,17 @@ public:
     lpta::LptaSkin::SKIN_ID GetSkinId(void) const { return skinId; }
     lpta::VERTEX_TYPE GetVertexType(void) const { return vertexType; }
 
+    unsigned int GetNumVertices(void) { return numVertices; }
+    unsigned int GetNumIndices(void) { return numIndices; }
+
     bool CanFit(const lpta::LptaVertices &vertices, const lpta::INDICES &indices) const;
     bool CanFit(const lpta::LptaVertices &vertices) const;
 
     bool Add(const lpta::LptaVertices &vertices, const lpta::INDICES &indices);
     bool AddVertices(const lpta::LptaVertices &vertices);
+
+    LPDIRECT3DVERTEXBUFFER9 GetVertexBuffer(void) { return vertexBuffer; }
+    LPDIRECT3DINDEXBUFFER9 GetIndexBuffer(void) { return indexBuffer; }
 
 private:
     bool LockedBuffers(void **vertexWriteBuffer, unsigned int vertexByteSize,

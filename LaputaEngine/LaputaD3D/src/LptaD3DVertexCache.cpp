@@ -1,8 +1,12 @@
+#include <list>
 #include "vertices/LptaD3DVertex.h"
 #include "LptaD3DVertexCache.h"
 
 namespace lpta_d3d
 {
+const unsigned int DEFAULT_DYNAMIC_VERTICES_SIZE = 5000;
+const unsigned int DEFAULT_DYNAMIC_INDICES_SIZE = 1000;
+
 inline D3DMATERIAL9 ToDXMaterial(const lpta::LptaMaterial &material);
 
 LptaD3DVertexCache::LptaD3DVertexCache(LPDIRECT3DDEVICE9 d3ddev) : 
@@ -96,19 +100,77 @@ D3DMATERIAL9 ToDXMaterial(const lpta::LptaMaterial &material)
 HRESULT LptaD3DVertexCache::Render(const lpta::LptaVertices &vertices, const lpta::INDICES &indices, 
     lpta::LptaSkin::SKIN_ID skinId)
 {
-    return E_FAIL;
+    LptaD3DDynamicBuffer *buffer = nullptr;
+    for (DYNAMIC_BUFFER &candidate : dynamicBuffers) {
+        if (candidate->CanFit(vertices, indices) && skinId == candidate->GetSkinId()) {
+            buffer = candidate.get();
+            break;
+        }
+    }
+    // todo prevent buffer allocate overruns
+    if (nullptr == buffer) {
+        DYNAMIC_BUFFER newBuffer(
+            new LptaD3DDynamicBuffer(
+                d3ddev, 
+                vertices.GetType(), 
+                std::max(DEFAULT_DYNAMIC_VERTICES_SIZE, vertices.GetNumVertices()), 
+                std::max(DEFAULT_DYNAMIC_INDICES_SIZE, indices.size()), 
+                skinId));
+        dynamicBuffers.push_back(newBuffer);
+        buffer = newBuffer.get();
+    }
+    buffer->Add(vertices, indices);
+    return S_OK;
 }
 
 HRESULT LptaD3DVertexCache::ForcedFlushAll(void)
 {
-    // todo implement
-    return E_FAIL;
+    while (dynamicBuffers.size() > 0) {
+        ForcedFlush(dynamicBuffers.front()->GetVertexType());
+    }
+    return S_OK;
 }
 
+// todo eliminate code dup with static
 HRESULT LptaD3DVertexCache::ForcedFlush(lpta::VERTEX_TYPE vertexType)
 {
-    // todo implement
-    return E_FAIL;
+    std::list<DYNAMIC_BUFFER> deadBuffers;
+    bool failed = false;
+    for (DYNAMIC_BUFFER &buffer : dynamicBuffers) {
+        if (vertexType == buffer->GetVertexType()) {
+            using namespace lpta;
+            d3ddev->SetIndices(buffer->GetIndexBuffer());
+            d3ddev->SetStreamSource(0, buffer->GetVertexBuffer(), 0, ToStride(buffer->GetVertexType()));
+            const LptaSkin &skin = skinManager->RetrieveSkin(buffer->GetSkinId());
+            const LptaMaterial &material = materialManager->RetrieveResource(skin.GetMaterialId());
+            D3DMATERIAL9 dxMaterial = ToDXMaterial(material);
+            d3ddev->SetMaterial(&dxMaterial);
+
+            for (unsigned int i = 0; i < skin.MAX_TEXTURES; ++i) {
+                if (skin.INVALID_TEXTURE_ID != skin.GetTextureIds().at(i)) {
+                    const LptaTexture &texture = textureManager->RetrieveTexture(
+                        skin.GetTextureIds().at(i)
+                    );
+                    // todo this indicing seems odd
+                    d3ddev->SetTexture(i, static_cast<LPDIRECT3DTEXTURE9>(texture.GetData()));
+                }
+            }
+            d3ddev->SetFVF(ToFVF(buffer->GetVertexType()));
+            unsigned int foo = static_cast<unsigned int>(buffer->GetNumIndices() / 3.0f);
+            // assume triangles for now
+            HRESULT result = d3ddev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0,
+                0, buffer->GetNumVertices(), 
+                0, static_cast<unsigned int>(buffer->GetNumIndices() / 3.0f));
+            if (S_OK != result) {
+                failed = true;
+            }
+            deadBuffers.push_back(buffer);
+        }
+    }
+    for (DYNAMIC_BUFFER &buffer : deadBuffers) {
+        dynamicBuffers.remove(buffer);
+    }
+    return !failed? S_OK : E_FAIL;
 }
 
 }
