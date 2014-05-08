@@ -79,7 +79,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(OutputPath)\Laputa3D.lib;$(OutputPath)\LaputaGeneral.lib;$(OutputPath)\LaputaRenderer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutputPath)\Laputa3D.lib;$(OutputPath)\LaputaGeneral.lib;$(OutputPath)\LaputaRenderer.lib;$(SolutionDir)\..\lib\assimp-3.0.1270\bin_release\assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
 #include <list>
+#include <set>
 #include "vertices/LptaD3DVertex.h"
 #include "LptaD3DVertexCache.h"
 
@@ -125,8 +126,12 @@ HRESULT LptaD3DVertexCache::Render(const lpta::LptaVertices &vertices, const lpt
 
 HRESULT LptaD3DVertexCache::ForcedFlushAll(void)
 {
-    while (dynamicBuffers.size() > 0) {
-        ForcedFlush(dynamicBuffers.front()->GetVertexType());
+    std::set<lpta::VERTEX_TYPE> processedTypes;
+    for (DYNAMIC_BUFFER &buffer : dynamicBuffers) {
+        if (processedTypes.count(buffer->GetVertexType()) == 0) {
+            ForcedFlush(buffer->GetVertexType());
+            processedTypes.insert(buffer->GetVertexType());
+        }
     }
     return S_OK;
 }
@@ -134,7 +139,7 @@ HRESULT LptaD3DVertexCache::ForcedFlushAll(void)
 // todo eliminate code dup with static
 HRESULT LptaD3DVertexCache::ForcedFlush(lpta::VERTEX_TYPE vertexType)
 {
-    std::list<DYNAMIC_BUFFER> deadBuffers;
+    //std::list<DYNAMIC_BUFFER> deadBuffers;
     bool failed = false;
     for (DYNAMIC_BUFFER &buffer : dynamicBuffers) {
         if (vertexType == buffer->GetVertexType()) {
@@ -164,12 +169,11 @@ HRESULT LptaD3DVertexCache::ForcedFlush(lpta::VERTEX_TYPE vertexType)
             if (S_OK != result) {
                 failed = true;
             }
-            deadBuffers.push_back(buffer);
+            buffer->Clear();
+            //deadBuffers.push_back(buffer);
         }
     }
-    for (DYNAMIC_BUFFER &buffer : deadBuffers) {
-        dynamicBuffers.remove(buffer);
-    }
+    // todo reclaim buffers as necessary, for now, simply empty
     return !failed? S_OK : E_FAIL;
 }
 

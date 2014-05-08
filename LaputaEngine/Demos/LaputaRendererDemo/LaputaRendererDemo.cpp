@@ -125,8 +125,11 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdArgs, in
         }
 
         if (g_hasFocus) {
+            static float rad = 0.0f;
+            LptaMatrix rotation = LptaMatrix::MakeRotateYAxisMatrix(rad);
+            rad += 0.05f;
             device->BeginRendering(true, true, true);
-            device->SetWorldTransform(m);
+            device->SetWorldTransform(rotation);
             device->SetView3D(right, up, dir, point);
             device->GetVertexCache()->FlushStaticBuffer(bufferId);
             device->Render(*model);

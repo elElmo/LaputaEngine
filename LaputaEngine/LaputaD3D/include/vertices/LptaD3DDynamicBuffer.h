@@ -33,8 +33,10 @@ public:
     bool Add(const lpta::LptaVertices &vertices, const lpta::INDICES &indices);
     bool AddVertices(const lpta::LptaVertices &vertices);
 
-    LPDIRECT3DVERTEXBUFFER9 GetVertexBuffer(void) { return vertexBuffer; }
-    LPDIRECT3DINDEXBUFFER9 GetIndexBuffer(void) { return indexBuffer; }
+    void Clear(void) { numVertices = numIndices = 0; }
+
+    LPDIRECT3DVERTEXBUFFER9 GetVertexBuffer(void) const { return vertexBuffer; }
+    LPDIRECT3DINDEXBUFFER9 GetIndexBuffer(void) const { return indexBuffer; }
 
 private:
     bool LockedBuffers(void **vertexWriteBuffer, unsigned int vertexByteSize,
