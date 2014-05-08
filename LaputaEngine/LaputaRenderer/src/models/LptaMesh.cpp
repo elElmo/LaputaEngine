@@ -4,6 +4,7 @@
 
 namespace lpta
 {
+bool LptaMesh::loadSwapZYAxis = false;
 
 #pragma warning( push )
 #pragma warning( disable : 4101 )

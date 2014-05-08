@@ -40,8 +40,14 @@ private:
     LptaResource::ID cacheId;
 
 public:
+    static void SetLoadSwapZYAxis(bool swap) { loadSwapZYAxis = swap; }
+    static bool GetLoadSwapZYAxis(void) { return loadSwapZYAxis; }
+
     static LptaMesh *LoadFromFile(const std::string &filename, 
         VERTEX_TYPE vertexType=VERTEX_TYPE::VT_UL);
+
+protected:
+    static bool loadSwapZYAxis;
 };
 
 }

@@ -108,6 +108,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdArgs, in
     device->ActivateVertexShader(0, VERTEX_TYPE::VT_UU);
     device->ActivatePixelShader(0);
 
+    LptaMesh::SetLoadSwapZYAxis(true);
     std::auto_ptr<LptaMesh> model(LptaMesh::LoadFromFile("test.3ds", VERTEX_TYPE::VT_UU));
     //device->Cache(*model);
 

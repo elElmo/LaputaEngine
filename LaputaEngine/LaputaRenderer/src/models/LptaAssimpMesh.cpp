@@ -73,8 +73,9 @@ LptaULVertices *CopyULMesh(INDICES &indices, const aiScene *scene)
             UL_VERTEX vertex;
             auto meshVertex = mesh->mVertices[i];
             // todo use actual values
-            vertex.coordinate = lpta_3d::LptaVector(meshVertex.x,
-                meshVertex.y, meshVertex.z);
+            vertex.coordinate = LptaMesh::GetLoadSwapZYAxis()?
+                lpta_3d::LptaVector(meshVertex.x, meshVertex.z, meshVertex.y) :
+                lpta_3d::LptaVector(meshVertex.x, meshVertex.y, meshVertex.z);
             vertex.tu = 0.0f;
             vertex.tv = 0.0f;
             vertices->AddVertex(vertex);
@@ -98,8 +99,9 @@ LptaUUVertices *CopyUUMesh(INDICES &indices, const aiScene *scene)
             UU_VERTEX vertex;
             auto meshVertex = mesh->mVertices[i];
             // todo use actual values
-            vertex.coordinate = lpta_3d::LptaVector(meshVertex.x,
-                meshVertex.y, meshVertex.z);
+            vertex.coordinate = LptaMesh::GetLoadSwapZYAxis()?
+                lpta_3d::LptaVector(meshVertex.x, meshVertex.z, meshVertex.y) :
+                lpta_3d::LptaVector(meshVertex.x, meshVertex.y, meshVertex.z);
             vertex.tu = 0.0f;
             vertex.tv = 0.0f;
             vertices->AddVertex(vertex);
