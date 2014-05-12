@@ -1,6 +1,5 @@
 #include <fstream>
 #include <Windows.h>
-#include "LptaD3D.h"
 #include "LptaD3DConfig.h"
 #include "Lpta3D.h"
 #include "LptaVector.h"
@@ -12,7 +11,9 @@
 #include "LptaD3DMatrix.h"
 #include "LptaD3DUtils.h"
 #include "LptaResource.h"
-#include "models/LptaMesh.h"
+#include "LptaD3DUtils.h"
+#include "object3d/Object3D.h"
+#include "LptaD3D.h"
 using lpta_3d::LptaVector;
 using lpta_3d::LptaNormalVector;
 using std::unique_ptr;
@@ -156,13 +157,23 @@ HRESULT LptaD3D::BeginRendering(bool clearPixel, bool clearDepth, bool clearSten
 
 HRESULT LptaD3D::Render(const lpta::LptaMesh &mesh)
 {
+    const lpta::LptaSkin &skin = GetSkinManager()->RetrieveSkin(mesh.GetSkinId());
+    //D3DMATERIAL9 dxMat = lpta_d3d_utils::ToDXMaterial(GetMaterialManager()->RetrieveMaterial(skin.GetMaterialId()));
+    D3DMATERIAL9 dxMat = lpta_d3d_utils::ToDXMaterial(GetMaterialManager()->RetrieveMaterial(skin.GetMaterialId()));
+    d3ddev->SetMaterial(&dxMat);
+    // only set first for now
+    if (skin.NumTextures() > 0) {
+        lpta::LptaTexture::ID textureId = skin.GetTextureIds().front();
+        d3ddev->SetTexture(0, static_cast<LPDIRECT3DTEXTURE9>(GetTextureManager()->RetrieveTexture(textureId).GetData()));
+    }
+    else {
+        d3ddev->SetTexture(0, nullptr);
+    }
     if (mesh.IsCached()) {
         GetVertexCache()->FlushStaticBuffer(mesh.GetCacheId());
         return S_OK;
     }
     else {
-        // todo dynamic buffering
-        // todo actual skin id
         this->vertexCache->Render(mesh.GetVertices(), mesh.GetIndices(), 0);
         return S_OK;
     }
@@ -170,27 +181,31 @@ HRESULT LptaD3D::Render(const lpta::LptaMesh &mesh)
 
 HRESULT LptaD3D::Clear(bool clearPixel, bool clearDepth, bool clearStencil)
 {
-    DWORD clearFlag = 0;
-    if (clearPixel) {
-        clearFlag |= D3DCLEAR_TARGET;
-    }
-    /*if (clearDepth) {
-        clearFlag |= D3DCLEAR_ZBUFFER;
-    }*/
-    /*if (clearStencil) {
-        clearFlag |= D3DCLEAR_STENCIL;
-    }*/
     if (isSceneRunning) {
         d3ddev->EndScene();
     }
-    if (clearFlag != 0) {
-        bool failed = false;
-        if (FAILED(d3ddev->Clear(0, nullptr, clearFlag, clearColor, 1.0f, 0))) {
+ 
+    bool failed = false;
+    if (clearPixel) {
+        if (FAILED(d3ddev->Clear(0, nullptr, D3DCLEAR_TARGET, clearColor, 1.0f, 0))) {
             failed = true;
         }
     }
-    if (isSceneRunning) {
+    if (clearDepth) {
+        if (FAILED(d3ddev->Clear(0, nullptr, D3DCLEAR_ZBUFFER, clearColor, 1.0f, 0))) {
+            failed = true;
+        }
+    }
+    if (clearStencil) {
+       if (FAILED(d3ddev->Clear(0, nullptr, D3DCLEAR_STENCIL, clearColor, 1.0f, 0))) {
+            failed = true;
+        }
+    }
+    if (!failed && isSceneRunning) {
         d3ddev->BeginScene();
+    }
+    else if (failed) {
+        return E_FAIL;
     }
     return S_OK;
 }

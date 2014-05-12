@@ -1,14 +1,16 @@
 #include <list>
 #include <set>
+#include <algorithm>
 #include "vertices/LptaD3DVertex.h"
+#include "LptaD3DUtils.h"
 #include "LptaD3DVertexCache.h"
+
+// todo - skin id use with object3d
 
 namespace lpta_d3d
 {
 const unsigned int DEFAULT_DYNAMIC_VERTICES_SIZE = 5000;
 const unsigned int DEFAULT_DYNAMIC_INDICES_SIZE = 1000;
-
-inline D3DMATERIAL9 ToDXMaterial(const lpta::LptaMaterial &material);
 
 LptaD3DVertexCache::LptaD3DVertexCache(LPDIRECT3DDEVICE9 d3ddev) : 
     d3ddev(d3ddev), staticBuffers(LptaD3DStaticBufferManager(d3ddev)),
@@ -50,9 +52,9 @@ HRESULT LptaD3DVertexCache::FlushStaticBuffer(LptaD3DStaticBufferResource::ID id
         d3ddev->SetStreamSource(0, buffer->GetVertexBuffer(), 0, ToStride(buffer->GetVertexType()));
         const LptaSkin &skin = skinManager->RetrieveSkin(buffer->GetSkinId());
         const LptaMaterial &material = materialManager->RetrieveResource(skin.GetMaterialId());
-        D3DMATERIAL9 dxMaterial = ToDXMaterial(material);
-        d3ddev->SetMaterial(&dxMaterial);
-
+        //D3DMATERIAL9 dxMaterial = lpta_d3d_utils::ToDXMaterial(material);
+        //d3ddev->SetMaterial(&dxMaterial);
+/*
         for (unsigned int i = 0; i < skin.MAX_TEXTURES; ++i) {
             if (skin.INVALID_TEXTURE_ID != skin.GetTextureIds().at(i)) {
                 const LptaTexture &texture = textureManager->RetrieveTexture(
@@ -62,6 +64,7 @@ HRESULT LptaD3DVertexCache::FlushStaticBuffer(LptaD3DStaticBufferResource::ID id
                 d3ddev->SetTexture(i, static_cast<LPDIRECT3DTEXTURE9>(texture.GetData()));
             }
         }
+*/
         d3ddev->SetFVF(ToFVF(buffer->GetVertexType()));
         unsigned int foo = static_cast<unsigned int>(buffer->GetNumIndices() / 3.0f);
         // assume triangles for now
@@ -75,25 +78,7 @@ HRESULT LptaD3DVertexCache::FlushStaticBuffer(LptaD3DStaticBufferResource::ID id
         return E_FAIL;
     }
 }
-D3DMATERIAL9 ToDXMaterial(const lpta::LptaMaterial &material)
-{
-    D3DMATERIAL9 dxMat = {
-        material.GetDiffuse().GetRed(), material.GetDiffuse().GetGreen(),
-        material.GetDiffuse().GetBlue(), material.GetDiffuse().GetAlpha(),
 
-        material.GetAmbient().GetRed(), material.GetAmbient().GetGreen(),
-        material.GetAmbient().GetBlue(), material.GetAmbient().GetAlpha(),
-
-        material.GetSpecular().GetRed(), material.GetSpecular().GetGreen(),
-        material.GetSpecular().GetBlue(), material.GetSpecular().GetAlpha(),
-
-        material.GetEmissive().GetRed(), material.GetEmissive().GetGreen(),
-        material.GetEmissive().GetBlue(), material.GetEmissive().GetAlpha(),
-
-        material.GetSpecularPower()
-    };
-    return dxMat;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Dynamic buffers
@@ -148,9 +133,9 @@ HRESULT LptaD3DVertexCache::ForcedFlush(lpta::VERTEX_TYPE vertexType)
             d3ddev->SetStreamSource(0, buffer->GetVertexBuffer(), 0, ToStride(buffer->GetVertexType()));
             const LptaSkin &skin = skinManager->RetrieveSkin(buffer->GetSkinId());
             const LptaMaterial &material = materialManager->RetrieveResource(skin.GetMaterialId());
-            D3DMATERIAL9 dxMaterial = ToDXMaterial(material);
-            d3ddev->SetMaterial(&dxMaterial);
-
+            //D3DMATERIAL9 dxMaterial = lpta_d3d_utils::ToDXMaterial(material);
+            //d3ddev->SetMaterial(&dxMaterial);
+/*
             for (unsigned int i = 0; i < skin.MAX_TEXTURES; ++i) {
                 if (skin.INVALID_TEXTURE_ID != skin.GetTextureIds().at(i)) {
                     const LptaTexture &texture = textureManager->RetrieveTexture(
@@ -160,6 +145,7 @@ HRESULT LptaD3DVertexCache::ForcedFlush(lpta::VERTEX_TYPE vertexType)
                     d3ddev->SetTexture(i, static_cast<LPDIRECT3DTEXTURE9>(texture.GetData()));
                 }
             }
+*/
             d3ddev->SetFVF(ToFVF(buffer->GetVertexType()));
             unsigned int foo = static_cast<unsigned int>(buffer->GetNumIndices() / 3.0f);
             // assume triangles for now

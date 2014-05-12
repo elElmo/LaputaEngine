@@ -1,4 +1,5 @@
 #include "LptaD3DUtils.h"
+#include "LptaMaterial.h"
 #include <algorithm>
 #include <sstream>
 

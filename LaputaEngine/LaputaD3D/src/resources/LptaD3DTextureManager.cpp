@@ -14,9 +14,13 @@ LptaD3DTextureManager::LptaD3DTextureManager(LPDIRECT3DDEVICE9 d3ddev) : d3ddev(
 
 LptaD3DTextureManager::~LptaD3DTextureManager(void)
 {
+    for (auto &resource : resources) {
+        static_cast<LptaD3DTexture*>(&resource.second)->Release();
+    }
+    resources.clear();
 }
 
-LptaD3DTexture::TEXTURE_ID LptaD3DTextureManager::AddorRetrieveTexture(const std::string &filename, 
+LptaD3DTexture::TEXTURE_ID LptaD3DTextureManager::AddOrRetrieveTexture(const std::string &filename, 
     bool transparent, float alpha,
     const LptaD3DTexture::COLOR_KEYS &colorKeys)
 {

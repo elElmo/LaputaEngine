@@ -53,15 +53,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;LAPUTAD3D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)\include;$(ProjectDir)\;$(ProjectDir)\include;$(SolutionDir)\LaputaRenderer\include;$(SolutionDir)\Laputa3D\include;$(SolutionDir)\LaputaGeneral\include;$(SolutionDir)\..\lib\CImage-1.5.7\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)\include;$(ProjectDir)\;$(ProjectDir)\include;$(SolutionDir)\LaputaRenderer\include;$(SolutionDir)\Laputa3D\include;$(SolutionDir)\LaputaGeneral\include;$(SolutionDir)\..\lib\CImage-1.5.7\include;$(SolutionDir)\..\lib\FreeImage-3.16.0\Dist;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(DXSDK_DIR)\lib\$(PlatformTarget)\d3dx9.lib;$(DXSDK_DIR)\lib\$(PlatformTarget)\d3d9.lib;$(OutputPath)\LaputaRenderer.lib;$(OutputPath)\Laputa3D.lib;$(SolutionDir)\..\lib\assimp-3.0.1270\bin_debug\assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(DXSDK_DIR)\lib\$(PlatformTarget)\d3dx9.lib;$(DXSDK_DIR)\lib\$(PlatformTarget)\d3d9.lib;$(OutputPath)\LaputaRenderer.lib;$(OutputPath)\Laputa3D.lib;$(SolutionDir)\..\lib\assimp-3.0.1270\bin_debug\assimp.lib;$(SolutionDir)\..\lib\FreeImage-3.16.0\Dist\FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>LIB.exe /OUT:$(OutputPath)\LaputaD3D_Static.lib $(IntDir)\*.obj </Command>
+      <Command>LIB.exe /OUT:$(OutputPath)\LaputaD3D_Static.lib $(IntDir)\*.obj $(SolutionDir)\..\lib\FreeImage-3.16.0\Dist\FreeImage.lib</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>builds a debug static library to test non-exported functions</Message>
@@ -76,14 +76,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LAPUTAD3D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\;$(ProjectDir)\include;$(SolutionDir)\LaputaGeneral\include;$(SolutionDir)\Laputa3D\include;$(SolutionDir)\LaputaRenderer\include;$(DXSDK_DIR)\include;$(SolutionDir)\..\lib\CImage-1.5.7\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\;$(ProjectDir)\include;$(SolutionDir)\LaputaGeneral\include;$(SolutionDir)\Laputa3D\include;$(SolutionDir)\LaputaRenderer\include;$(DXSDK_DIR)\include;$(SolutionDir)\..\lib\FreeImage-3.16.0\Dist</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(OutputPath)\LaputaRenderer.lib;$(OutputPath)\Laputa3D.lib;$(DXSDK_DIR)\Lib\$(PlatformTarget)\d3d9.lib;$(DXSDK_DIR)\Lib\$(PlatformTarget)\d3dx9.lib;$(SolutionDir)\..\lib\assimp-3.0.1270\bin_release\assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutputPath)\LaputaRenderer.lib;$(OutputPath)\Laputa3D.lib;$(DXSDK_DIR)\Lib\$(PlatformTarget)\d3d9.lib;$(DXSDK_DIR)\Lib\$(PlatformTarget)\d3dx9.lib;$(SolutionDir)\..\lib\assimp-3.0.1270\bin_release\assimp.lib;$(SolutionDir)\..\lib\FreeImage-3.16.0\Dist\FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>LIB.exe /OUT:$(OutputPath)\LaputaD3D_Static.lib $(IntDir)\*.obj </Command>

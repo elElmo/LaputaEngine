@@ -1,6 +1,5 @@
 #include <d3d9.h>
-#define cimg_display 0
-#include <cimage/CImg.h>
+#include "FreeImage.h"
 #include "LptaD3DColorUtils.h"
 #include "resources/errors/TextureD3DFailure.h"
 #include "resources/errors/TextureFileNotFound.h"
@@ -11,7 +10,7 @@ namespace lpta_d3d
 {
 // D3DLoadTextureFile
 
-inline void CopyCImgToD3DRect32Bit(const cimg_library::CImg<unsigned char> &image, 
+inline void CopyFImageToD3DRect32Bit(FIBITMAP &image, 
     D3DLOCKED_RECT d3dLockedRect);
 
 inline bool EqualRGB(const lpta::LptaColor &color, const Color32Bit &colorStruct)
@@ -29,7 +28,7 @@ inline bool LesserAlpha(float alpha, const Color32Bit &colorStruct) {
 
 LptaD3DTexture::LptaD3DTexture(LPDIRECT3DDEVICE9 d3ddev, ID id, const string &filename, 
     float alpha, const COLOR_KEYS &colorKeys) : 
-    LptaTexture(id, filename, (DATA)D3DLoadTextureFile(d3ddev, filename, alpha), alpha, colorKeys)
+    LptaTexture(id, filename, (DATA)D3DLoadTextureFile(d3ddev, filename, alpha != 1.0f), alpha, colorKeys)
 {
 }
 
@@ -41,21 +40,23 @@ LptaD3DTexture::LptaD3DTexture(ID id, const string &name, LPDIRECT3DTEXTURE9 dat
 
 LptaD3DTexture::~LptaD3DTexture(void)
 {
-    ((LPDIRECT3DDEVICE9)GetData())->Release();
 }
 
+struct FileNotFound {};
 #define TO_4_BYTE 4
 LPDIRECT3DTEXTURE9 LptaD3DTexture::D3DLoadTextureFile(LPDIRECT3DDEVICE9 d3ddev, 
     const string &filename, bool alpha)
 {
-    using namespace cimg_library;
     try {
-        CImg<unsigned char> image(filename.c_str());
+        FIBITMAP *image = FreeImage_Load(FreeImage_GetFileType(filename.c_str(), 0), filename.c_str());
+        if (!image) {
+            throw FileNotFound();
+        }
         D3DFORMAT format = D3DFMT_A8R8G8B8;
         LPDIRECT3DTEXTURE9 textureData = nullptr;
         D3DLOCKED_RECT d3dLockedRect;
         HRESULT result = d3ddev->CreateTexture(
-            image.width(), image.height(),
+            FreeImage_GetWidth(image), FreeImage_GetHeight(image),
             1, 0,
             format,
             D3DPOOL_MANAGED,
@@ -71,29 +72,33 @@ LPDIRECT3DTEXTURE9 LptaD3DTexture::D3DLoadTextureFile(LPDIRECT3DDEVICE9 d3ddev,
             throw TextureD3DFailure("could not lock image buffer for copy");
         }
 
-        CopyCImgToD3DRect32Bit(image, d3dLockedRect);
+        CopyFImageToD3DRect32Bit(*image, d3dLockedRect);
         textureData->UnlockRect(0);
+        FreeImage_Unload(image);
         return textureData;
     }
-    catch (cimg_library::CImgIOException) {
+    catch (FileNotFound) {
         throw TextureFileNotFound(filename);
     }
 }
 
-void CopyCImgToD3DRect32Bit(const cimg_library::CImg<unsigned char> &image, 
+void CopyFImageToD3DRect32Bit(FIBITMAP &image, 
     D3DLOCKED_RECT d3dLockedRect)
 {
-    bool hasAlphaChannel = image.spectrum() > ALPHA_CHANNEL;
+    // todo confirm 32 bit 
+    bool hasAlphaChannel = (FreeImage_IsTransparent(&image) == TRUE);
     unsigned int colorsPerLine = d3dLockedRect.Pitch >> 2;
     Color32Bit *buffer = static_cast<Color32Bit*>(d3dLockedRect.pBits);
-    for (int y = 0; y < image.height(); ++y) {
-        for (int x = 0; x < image.width(); ++x) {
-            Color32Bit color = {
-                hasAlphaChannel? image(x, y, ALPHA_CHANNEL) : 0xFF,
-                image(x, y, RED_CHANNEL),
-                image(x, y, GREEN_CHANNEL),
-                image(x, y, BLUE_CHANNEL),
-            };
+    for (unsigned int y = 0; y < FreeImage_GetHeight(&image); ++y) {
+        for (unsigned int x = 0; x < FreeImage_GetWidth(&image); ++x) {
+            RGBQUAD rgb;
+            FreeImage_GetPixelColor(&image, x, y, &rgb);
+            Color32Bit color;
+            color.a = hasAlphaChannel? rgb.rgbReserved : 0xFF,
+            color.a = 0xFF;
+            color.r = rgb.rgbRed;
+            color.g = rgb.rgbGreen;
+            color.b = rgb.rgbBlue;
             buffer[(y * colorsPerLine) + x] = color;
         }
     }

@@ -14,8 +14,9 @@ public:
     LptaD3DTextureManager(LPDIRECT3DDEVICE9 d3ddev);
     ~LptaD3DTextureManager(void);
 
-    virtual LptaD3DTexture::TEXTURE_ID AddorRetrieveTexture(const std::string &filename, bool transparent, float alpha,
+    virtual LptaD3DTexture::TEXTURE_ID AddOrRetrieveTexture(const std::string &filename, bool transparent, float alpha,
         const LptaD3DTexture::COLOR_KEYS &colorKeys);
+
 protected:
     virtual lpta::LptaTexture::DATA GenerateDefaultData(void);
 

@@ -6,6 +6,6 @@
   <ItemDefinitionGroup />
   <ItemGroup />
   <PropertyGroup>
-    <LocalDebuggerEnvironment>PATH=%PATH%;$(SolutionDir)\..\lib\assimp-3.0.1270\bin_debug</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment>PATH=%PATH%;$(SolutionDir)\..\lib\assimp-3.0.1270\bin_debug;$(SolutionDir)\..\lib\FreeImage-3.16.0\Dist</LocalDebuggerEnvironment>
   </PropertyGroup>
 </Project>

@@ -16,7 +16,7 @@
 #include "vertices/LptaVertices.h"
 #include "vertices/LptaUUVertices.h"
 #include "vertices/LptaIndices.h"
-#include "models/LptaMesh.h"
+#include "object3d/Object3D.h"
 using namespace lpta;
 using namespace lpta_3d;
 
@@ -83,7 +83,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdArgs, in
     LptaVector right(1.0f, 0.0f, 0.0f);
     LptaVector up(0.0f, 1.0f, 0.0f);
     LptaVector dir(0.0f, 0.0f, 1.0f);
-    LptaVector point(0.0f, 0.0f, 5.0f);
+    LptaVector point(0.0f, 0.0f, 50.0f);
 
     LptaUUVertices tri;
     UU_VERTEX vertex = {
@@ -105,12 +105,15 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdArgs, in
     LptaResource::ID bufferId = device->GetVertexCache()->CreateStaticBuffer(tri, indices, 0);
 
     device->SetCullingMode(RS_CULL_NONE);
-    device->ActivateVertexShader(0, VERTEX_TYPE::VT_UU);
-    device->ActivatePixelShader(0);
 
     LptaMesh::SetLoadSwapZYAxis(true);
-    std::auto_ptr<LptaMesh> model(LptaMesh::LoadFromFile("test.3ds", VERTEX_TYPE::VT_UU));
-    //device->Cache(*model);
+    std::auto_ptr<LptaMesh> model(LptaMesh::LoadFromFile("amiga_ball.3ds", 
+        *device,
+        VERTEX_TYPE::VT_UU));
+    device->Cache(*model);
+
+    std::auto_ptr<LptaMesh> floorModel(LptaMesh::LoadFromFile("floor.dae", *device));
+    device->Cache(*floorModel);
 
     LptaMatrix m = LptaMatrix::MakeIdentityMatrix();
     m.SetTranslation(0.0f, 0.0f, 0.0f);
@@ -128,13 +131,20 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdArgs, in
         if (g_hasFocus) {
             static float rad = 0.0f;
             LptaMatrix rotation = LptaMatrix::MakeRotateYAxisMatrix(rad);
-            rad += 0.05f;
+            rad += 0.005f;
             device->BeginRendering(true, true, true);
             device->SetWorldTransform(rotation);
             device->SetView3D(right, up, dir, point);
-            device->GetVertexCache()->FlushStaticBuffer(bufferId);
+            //device->GetVertexCache()->FlushStaticBuffer(bufferId);
             device->Render(*model);
+            device->SetWorldTransform(LptaMatrix::MakeIdentityMatrix());
+            device->Render(*floorModel);
             device->EndRendering();
+
+            point = point * LptaMatrix::MakeRotateXAxisMatrix(0.005);
+            dir = point - LptaVector(0.0f, 0.0f, 0.0f);
+            dir.Normalize();
+            up = right.Cross(dir);
         }
     }
     model.reset();

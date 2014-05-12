@@ -4,8 +4,10 @@
 #include <vector>
 #include <string>
 #include <d3d9.h>
+#include "LptaMaterial.h"
 
-namespace lpta_d3d_utils {
+namespace lpta_d3d_utils 
+{
 
 inline DWORD FloatToDWORD(float f)
 {
@@ -32,6 +34,26 @@ struct DisplayFormatComparator
         }
     }
 };
+
+inline D3DMATERIAL9 ToDXMaterial(const lpta::LptaMaterial &material)
+{
+    D3DMATERIAL9 dxMat = {
+        material.GetDiffuse().GetRed(), material.GetDiffuse().GetGreen(),
+        material.GetDiffuse().GetBlue(), material.GetDiffuse().GetAlpha(),
+
+        material.GetAmbient().GetRed(), material.GetAmbient().GetGreen(),
+        material.GetAmbient().GetBlue(), material.GetAmbient().GetAlpha(),
+
+        material.GetSpecular().GetRed(), material.GetSpecular().GetGreen(),
+        material.GetSpecular().GetBlue(), material.GetSpecular().GetAlpha(),
+
+        material.GetEmissive().GetRed(), material.GetEmissive().GetGreen(),
+        material.GetEmissive().GetBlue(), material.GetEmissive().GetAlpha(),
+
+        material.GetSpecularPower()
+    };
+    return dxMat;
+}
 
 }
 

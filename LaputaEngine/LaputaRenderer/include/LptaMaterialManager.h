@@ -16,7 +16,8 @@ public:
 
     LptaMaterial CreateNullResource(void);
 
-    LptaMaterial::MATERIAL_ID AddOrRetrieveMaterial(const LptaColor &diffuse, 
+    LptaMaterial::MATERIAL_ID AddOrRetrieveMaterial(
+        const LptaColor &diffuse, 
         const LptaColor &ambient, 
         const LptaColor &specular, 
         const LptaColor &emissive, 

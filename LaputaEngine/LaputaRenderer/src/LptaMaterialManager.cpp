@@ -6,7 +6,7 @@ namespace lpta
 {
 
 // purple
-const LptaColor LptaMaterialManager::DEFAULT_COLOR = LptaColor(0.5f, 0.0f, 1.0f, 1.0f);
+const LptaColor LptaMaterialManager::DEFAULT_COLOR = LptaColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 LptaMaterialManager::LptaMaterialManager(void)
 {

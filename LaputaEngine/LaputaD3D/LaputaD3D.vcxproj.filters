@@ -48,9 +48,6 @@
     <ClCompile Include="src\adapter\AdapterInfo.cpp">
       <Filter>Source Files\Adapter</Filter>
     </ClCompile>
-    <ClCompile Include="src\LptaD3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\LptaD3DBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -123,6 +120,9 @@
     <ClCompile Include="src\vertices\LptaD3DStaticBufferManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\LptaD3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -130,9 +130,6 @@
     </ClInclude>
     <ClInclude Include="include\adapter\AdapterInfo.h">
       <Filter>Header Files\Adapter</Filter>
-    </ClInclude>
-    <ClInclude Include="include\LptaD3D.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\LptaD3DConfig.h">
       <Filter>Header Files</Filter>
@@ -207,6 +204,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\vertices\LptaD3DStaticBufferResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LptaD3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

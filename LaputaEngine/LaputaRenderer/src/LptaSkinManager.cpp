@@ -31,4 +31,11 @@ LptaSkin::SKIN_ID LptaSkinManager::AddSkin(LptaMaterial::MATERIAL_ID materialId,
     return skin.GetId();
 }
 
+LptaSkin::SKIN_ID LptaSkinManager::AddSkin(LptaMaterial::MATERIAL_ID materialId, const LptaSkin::TEXTURE_IDS &textureIds, bool transparent)
+{
+    LptaSkin skin(GetNextId(), materialId, textureIds, transparent);
+    AddResource(skin);
+    return skin.GetId();
+}
+
 }

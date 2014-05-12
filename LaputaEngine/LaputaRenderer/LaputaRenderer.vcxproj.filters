@@ -66,10 +66,10 @@
     <ClCompile Include="src\vertices\LptaVertices.cpp">
       <Filter>Source Files\Vertices</Filter>
     </ClCompile>
-    <ClCompile Include="src\models\LptaMesh.cpp">
+    <ClCompile Include="src\object3d\Object3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\models\LptaAssimpMesh.cpp">
+    <ClCompile Include="src\object3d\AssimpObject3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -143,13 +143,13 @@
     <ClInclude Include="include\LptaVertexCache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\models\LptaMesh.h">
+    <ClInclude Include="include\object3d\Object3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\models\LptaAssimpMesh.h">
+    <ClInclude Include="include\object3d\AssimpObject3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\models\LptaNullMesh.h">
+    <ClInclude Include="include\object3d\NullObject3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -15,8 +15,8 @@
     <ClCompile Include="src\LptaTexture.cpp" />
     <ClCompile Include="src\LptaTextureManager.cpp" />
     <ClCompile Include="src\LptaViewport.cpp" />
-    <ClCompile Include="src\models\LptaAssimpMesh.cpp" />
-    <ClCompile Include="src\models\LptaMesh.cpp" />
+    <ClCompile Include="src\object3d\AssimpObject3D.cpp" />
+    <ClCompile Include="src\object3d\Object3D.cpp" />
     <ClCompile Include="src\vertices\LptaULVertices.cpp" />
     <ClCompile Include="src\vertices\LptaUUVertices.cpp" />
     <ClCompile Include="src\vertices\LptaVertices.cpp" />
@@ -36,9 +36,9 @@
     <ClInclude Include="include\LptaTextureManager.h" />
     <ClInclude Include="include\LptaVertexCache.h" />
     <ClInclude Include="include\LptaViewport.h" />
-    <ClInclude Include="include\models\LptaAssimpMesh.h" />
-    <ClInclude Include="include\models\LptaMesh.h" />
-    <ClInclude Include="include\models\LptaNullMesh.h" />
+    <ClInclude Include="include\object3d\AssimpObject3D.h" />
+    <ClInclude Include="include\object3d\Object3D.h" />
+    <ClInclude Include="include\object3d\NullObject3D.h" />
     <ClInclude Include="include\renderer\RenderStates.h" />
     <ClInclude Include="include\vertices\LptaIndices.h" />
     <ClInclude Include="include\vertices\LptaULVertices.h" />

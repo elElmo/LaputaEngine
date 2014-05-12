@@ -70,6 +70,8 @@ HRESULT LptaD3DDeviceBuilder::Make(HWND hWnd, const vector<HWND> &childWnds, lpt
     config->ShowUserDialog(hDll, hWnd);
     D3DPRESENT_PARAMETERS d3dpp = config->GetParameters();
     d3dpp.hDeviceWindow = d3dDevice->renderWindows[0];
+    d3dpp.EnableAutoDepthStencil = TRUE;
+    d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
     d3dDevice->screenWidth = d3dpp.BackBufferWidth;
     d3dDevice->screenHeight = d3dpp.BackBufferHeight;
     d3dDevice->d3d->CreateDevice(

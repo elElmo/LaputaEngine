@@ -20,6 +20,7 @@ public:
     LptaSkin CreateNullResource(void);
 
     LptaSkin::SKIN_ID AddSkin(LptaMaterial::MATERIAL_ID materialId, bool transparent);
+    LptaSkin::SKIN_ID AddSkin(LptaMaterial::MATERIAL_ID materialId, const LptaSkin::TEXTURE_IDS &textureIds, bool transparent);
 
     const LptaSkin &RetrieveSkin(LptaSkin::SKIN_ID id) const { return RetrieveResource(id); }
 private:

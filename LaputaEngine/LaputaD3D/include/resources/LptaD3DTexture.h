@@ -9,22 +9,28 @@ using std::string;
 namespace lpta_d3d
 {
 
+class LptaD3DTextureManager;
 class LptaD3DTexture : public lpta::LptaTexture
 {
+friend LptaD3DTextureManager;
+
 public:
     LptaD3DTexture(LPDIRECT3DDEVICE9 d3ddev, ID id, const string &filename, 
         float alpha, const COLOR_KEYS &colorKeys);
     LptaD3DTexture(ID id, const string &name, LPDIRECT3DTEXTURE9 data, 
         float alpha, const COLOR_KEYS &colorKeys);
-    LptaD3DTexture(const LptaD3DTexture &copyTarget);
     ~LptaD3DTexture(void);
 
     void SetTransparency(float alpha) const;
+
 protected:
     static LPDIRECT3DTEXTURE9 D3DLoadTextureFile(LPDIRECT3DDEVICE9 d3ddev, const string &filename, bool alpha);
 
     void SetAlphaKey(const lpta::LptaColor &colorKey) const;
     
+protected:
+    /* Friended methods */
+    void Release(void) { static_cast<LPDIRECT3DTEXTURE9>(GetData())->Release(); }
 };
 
 }

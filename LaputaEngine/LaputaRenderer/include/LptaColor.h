@@ -8,6 +8,7 @@ class LptaColor
 {
 protected:
     static const float DEFAULT_CHANNEL_VALUE;
+    static const float DEFAULT_ALPHA;
     static const unsigned int NUM_CHANNELS = 4;
     static const unsigned int RED = 0;
     static const unsigned int GREEN = 1;
@@ -15,6 +16,7 @@ protected:
     static const unsigned int ALPHA = 3;
 public:
     LptaColor(void);
+    LptaColor(float red, float green, float blue);
     LptaColor(float red, float green, float blue, float alpha);
     ~LptaColor(void);
 
